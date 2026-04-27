@@ -1,0 +1,412 @@
+!Layer3 Conf...
+enable
+conf t
+no ip domain lookup
+vtp mode transparent
+vtp domain cisco
+vtp password cisco 
+vtp version 2
+do show vtp status
+
+!VLANS CREATION...
+vlan 10
+name HUMAN-RESOURCE
+vlan 20
+name ACCOUNTING
+vlan 30
+name RECEPTION
+vlan 40
+name ENGINEERING
+vlan 60
+name QUALITY-ASSURANCE
+vlan 70
+name MARKETING
+vlan 80
+name SALES
+vlan 90
+name IT-SUPPORT
+vlan 100
+name GUEST-WIRELESS
+exit
+do sh vl br
+
+
+int f0/23
+description Trunk interface [Multilayer Switch - Layer2 Switch].
+swi mode trunk
+swi trunk encapsulation dot1q 
+swi trunk allowed vlan 10,20,30,40,60,70,80,90,100
+exit
+do show int trunk 
+
+!PORT Assignment....
+int range f0/1-2
+description  Access Ports For vlan 10 (Human-Resource)
+swi mode access
+swi access vlan 10
+exit
+
+int range f0/3-5
+description  Access Ports For vlan 20 (Accounting)
+swi mode access
+swi access vlan 20
+exit
+
+int range f0/6-8
+description  Access Ports For vlan 30 (Reception)
+swi mode access
+swi access vlan 30
+exit
+
+int range f0/9-11
+description  Access Ports For vlan 40 (Egineering)
+swi mode access
+swi access vlan 40
+exit
+
+int range f0/12-14
+description  Access Ports For vlan 60 (Quality-Assurance)
+swi mode access
+swi access vlan 60
+exit
+
+int range f0/15-16
+description  Access Ports For vlan 70 (Marketing)
+swi mode access
+swi access vlan 70
+exit
+
+int range f0/17-19
+description  Access Ports For vlan 80 (Sales)
+swi mode access
+swi access vlan 80
+exit
+
+int range f0/20-22
+description  Access Ports For vlan 90 (IT-Support)
+swi mode access
+swi access vlan 90
+exit
+
+int f0/24
+description  Access Ports For vlan 100 (Guest-Wireless)
+swi mode access
+swi access vlan 100
+exit
+
+int range g0/1-2
+description Unused Gig Interfaces.
+shutdown 
+exit
+show vlan brief
+
+
+!SVIs conf...
+int vlan 10
+description SVI for Vlan 10
+ip address 192.168.51.1 255.255.255.0
+no shut
+exit
+
+int vlan 20
+description SVI for Vlan 20
+ip address 192.168.22.1 255.255.255.0
+no shut
+exit
+
+int vlan 30
+description SVI for Vlan 30
+ip address 192.168.13.1 255.255.255.0
+no shut
+exit
+
+int vlan 40
+description SVI for Vlan 40
+ip address 192.168.14.1 255.255.255.0
+no shut
+exit
+
+int vlan 60
+description SVI for Vlan 60
+ip address 192.168.38.1 255.255.255.0
+no shut
+exit
+
+int vlan 70
+description SVI for Vlan 70
+ip address 192.168.70.1 255.255.255.0
+no shut
+exit
+
+int vlan 80
+description SVI for Vlan 80
+ip address 192.168.18.1 255.255.255.0
+no shut
+exit
+
+int vlan 90
+description SVI for Vlan 90
+ip address 192.168.15.1 255.255.255.0
+no shut
+exit
+
+int vlan 100
+description SVI for Vlan 100
+ip address 192.168.10.1 255.255.255.0
+no shut
+exit
+do show ip int br
+
+!DHCP conf...
+ip dhcp excluded-address 192.168.51.1 192.168.51.10
+ip dhcp pool VLAN-10
+network 192.168.51.0 255.255.255.0
+default-router 192.168.51.1
+domain-name vlan10.local
+dns-server 192.168.15.8
+exit
+
+ip dhcp excluded-address 192.168.22.1 192.168.22.10
+ip dhcp pool VLAN-20
+network 192.168.22.0 255.255.255.0
+default-router 192.168.22.1
+domain-name vlan20.local
+dns-server 192.168.15.8
+exit
+
+ip dhcp excluded-address 192.168.13.1 192.168.13.10
+ip dhcp pool VLAN-30
+network 192.168.13.0 255.255.255.0
+default-router 192.168.13.1
+domain-name vlan30.local
+dns-server 192.168.15.8
+exit
+
+ip dhcp excluded-address 192.168.14.1 192.168.14.10
+ip dhcp pool VLAN-40
+network 192.168.14.0 255.255.255.0
+default-router 192.168.14.1
+domain-name vlan40.local
+dns-server 192.168.15.8
+exit
+
+ip dhcp excluded-address 192.168.38.1 192.168.38.10
+ip dhcp pool VLAN-60
+network 192.168.38.0 255.255.255.0
+default-router 192.168.38.1
+domain-name vlan60.local
+dns-server 192.168.15.8
+exit
+
+ip dhcp excluded-address 192.168.70.1 192.168.70.10
+ip dhcp pool VLAN-70
+network 192.168.70.0 255.255.255.0
+default-router 192.168.70.1
+domain-name vlan70.local
+dns-server 192.168.70.8
+exit
+
+ip dhcp excluded-address 192.168.18.1 192.168.18.10
+ip dhcp pool VLAN-80
+network 192.168.18.0 255.255.255.0
+default-router 192.168.18.1
+domain-name vlan80.local
+dns-server 192.168.15.8
+exit
+
+ip dhcp excluded-address 192.168.15.1 192.168.15.15
+ip dhcp pool VLAN-90
+network 192.168.15.0 255.255.255.0
+default-router 192.168.15.1
+domain-name vlan90.local
+dns-server 192.168.15.8
+exit
+
+ip dhcp pool VLAN-100
+network 192.168.10.0 255.255.255.0
+default-router 192.168.10.1
+domain-name vlan100.local
+dns-server 192.168.15.8
+exit
+
+!SSH & Sec
+hostname MULTILAYER-SW
+banner motd ^Unauthorized Access is Prohibited^
+username Admin secret cisco
+enable secret cisco
+service password-encryption
+ip domain-name cisco.local
+crypto key gen rsa 
+1024
+ip ssh version 2
+line vty 0 15
+transport input ssh
+login local
+exit
+line console 0
+login local
+end
+wr mem
+exit
+
+!LAYER 2 Switchs Conf...
+!TRUNK Ints...
+enable
+conf t
+no ip domain lookup 
+int  f0/21
+description Trunk interfaces  L2_SW - L2_SW 
+swi mode trunk 
+swi trunk allowed vlan 10,20,30,40,60,70,80,90,100
+exit
+do show int trunk
+
+!LINK Aggregation...
+int range G0/1-2
+channel-group 1 mode active
+exit
+int port-channel 1
+description 2Gb/ps Aggregated Link From BUILDING A - BUILDING B.
+swi mode trunk
+swi trunck allowed vlan 10,20,0,40,60,70,80,90,100
+exit
+int G0/1
+description Member of port-channel 1
+exit
+int G0/2
+description Member of port-channel 1
+exit
+do show eth summary
+
+!VTP & Vlans
+vtp mode server
+vtp domain cisco
+vtp password cisco 
+vtp version 2
+do show vtp status
+
+!VLANS CREATION...
+vlan 10
+name HUMAN-RESOURCE
+vlan 20
+name ACCOUNTING
+vlan 30
+name RECEPTION
+vlan 40
+name ENGINEERING
+vlan 60
+name QUALITY-ASSURANCE
+vlan 70
+name MARKETING
+vlan 80
+name SALES
+vlan 90
+name IT-SUPPORT
+vlan 100
+name GUEST-WIRELESS
+exit
+do sh vl br
+
+vtp mode client
+vtp domain cisco
+vtp password cisco 
+vtp version 2
+do show vtp status
+do show vlan brief
+
+!PORT Assignment....
+int range f0/1-2
+description  Access Ports For vlan 10 (Human-Resource)
+swi mode access
+swi access vlan 10
+exit
+
+int range f0/3-5
+description  Access Ports For vlan 20 (Accounting)
+swi mode access
+swi access vlan 20
+exit
+
+int range f0/6-8
+description  Access Ports For vlan 30 (Reception)
+swi mode access
+swi access vlan 30
+exit
+
+int range f0/9-11
+description  Access Ports For vlan 40 (Egineering)
+swi mode access
+swi access vlan 40
+exit
+
+int range f0/12-14
+description  Access Ports For vlan 60 (Quality-Assurance)
+swi mode access
+swi access vlan 60
+exit
+
+int range f0/15-16
+description  Access Ports For vlan 70 (Marketing)
+swi mode access
+swi access vlan 70
+exit
+
+int range f0/17-19
+description  Access Ports For vlan 80 (Sales)
+swi mode access
+swi access vlan 80FLR 3
+exit
+
+int range f0/20, f0/22-23
+description  Access Ports For vlan 90 (IT-Support)
+swi mode access
+swi access vlan 90
+exit
+
+int f0/24
+description  Access Ports For vlan 100 (Guest-Wireless)
+swi mode access
+swi access vlan 100
+exit
+
+int range g0/1-2
+description Unused Gig Interfaces.
+shutdown 
+exit
+do show vlan brief
+
+!ROOT BRIDGE Conf..
+spanning-tree vlan 1,10,20,30,40,60,70,80,90,100 root  primary
+
+!Back ROOT BRIDGE Conf..
+spanning-tree vlan 1,10,20,30,40,60,70,80,90,100 root  primary
+
+!SVIs Conf...
+int vlan 90
+description  SVI for L2 Switch Remote Management
+ip address 192.168.15.7 255.255.255.0
+no shut
+exit
+ip default-gateway 192.168.15.1
+do show ip int br
+
+!SSH & Sec
+hostname BB_FLR1-SW
+banner motd ^Unauthorized Access is Prohibited^
+username Admin secret cisco
+enable secret cisco
+service password-encryption
+ip domain-name cisco.local
+crypto key gen rsa 
+1024
+ip ssh version 2
+line vty 0 15
+transport input ssh
+login local
+exit
+line console 0
+login local
+end
+wr mem
+exit
+
